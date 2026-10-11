@@ -1,0 +1,21 @@
+{
+  "donors": [
+    {"id":"D001","name":"Arjun Sharma","age":28,"blood_group":"O+","phone":"9876543210","email":"arjun@example.com","address":"Mumbai, Maharashtra","last_donation":"2024-12-01","units":2,"registered_on":"2024-01-15"},
+    {"id":"D002","name":"Priya Patel","age":24,"blood_group":"A+","phone":"9765432109","email":"priya@example.com","address":"Ahmedabad, Gujarat","last_donation":"2025-01-10","units":1,"registered_on":"2024-03-20"},
+    {"id":"D003","name":"Rahul Verma","age":32,"blood_group":"B-","phone":"9654321098","email":"rahul@example.com","address":"Delhi, NCR","last_donation":"2025-02-20","units":3,"registered_on":"2023-11-05"},
+    {"id":"D004","name":"Sneha Iyer","age":27,"blood_group":"AB+","phone":"9543210987","email":"sneha@example.com","address":"Chennai, Tamil Nadu","last_donation":"2025-03-05","units":1,"registered_on":"2024-06-10"},
+    {"id":"D005","name":"Vikram Singh","age":35,"blood_group":"O-","phone":"9432109876","email":"vikram@example.com","address":"Jaipur, Rajasthan","last_donation":"2024-11-15","units":4,"registered_on":"2023-08-22"}
+  ],
+  "requests": [
+    {"id":"R001","patient_name":"Mohan Das","blood_group":"O+","units_needed":2,"hospital":"City Hospital","priority":"emergency","status":"pending","requested_on":"2025-05-10","contact":"9111222333"},
+    {"id":"R002","patient_name":"Lakshmi Rao","blood_group":"A+","units_needed":1,"hospital":"Apollo Medical","priority":"normal","status":"fulfilled","requested_on":"2025-05-08","contact":"9222333444"},
+    {"id":"R003","patient_name":"Ravi Kumar","blood_group":"B-","units_needed":3,"hospital":"AIIMS","priority":"emergency","status":"pending","requested_on":"2025-05-12","contact":"9333444555"}
+  ],
+  "stock": {"A+":15,"A-":8,"B+":20,"B-":5,"AB+":10,"AB-":3,"O+":25,"O-":12},
+  "activities": [
+    {"action":"New donor registered: Arjun Sharma (O+)","time":"2025-05-15 10:30"},
+    {"action":"Blood request fulfilled for Lakshmi Rao (A+)","time":"2025-05-14 14:20"},
+    {"action":"Emergency request: Ravi Kumar needs B- (3 units)","time":"2025-05-13 09:15"},
+    {"action":"Stock updated: O+ added 5 units","time":"2025-05-12 16:45"}
+  ]
+}

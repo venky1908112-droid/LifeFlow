@@ -1,0 +1,112 @@
+{% extends "layout.html" %}
+{% block title %}Dashboard{% endblock %}
+{% block page_title %}Dashboard{% endblock %}
+{% block content %}
+<div class="dash-grid">
+  <div class="kpi-card kpi--red">
+    <div class="kpi-icon"><i class="fa fa-users"></i></div>
+    <div class="kpi-body"><div class="kpi-value">{{ stats.total_donors }}</div><div class="kpi-label">Total Donors</div></div>
+  </div>
+  <div class="kpi-card kpi--dark">
+    <div class="kpi-icon"><i class="fa fa-droplet"></i></div>
+    <div class="kpi-body"><div class="kpi-value">{{ stats.total_units }}</div><div class="kpi-label">Blood Units</div></div>
+  </div>
+  <div class="kpi-card kpi--muted">
+    <div class="kpi-icon"><i class="fa fa-hand-holding-medical"></i></div>
+    <div class="kpi-body"><div class="kpi-value">{{ stats.total_requests }}</div><div class="kpi-label">Total Requests</div></div>
+  </div>
+  <div class="kpi-card kpi--alert">
+    <div class="kpi-icon"><i class="fa fa-triangle-exclamation"></i></div>
+    <div class="kpi-body"><div class="kpi-value">{{ stats.emergency_requests }}</div><div class="kpi-label">Emergency</div></div>
+  </div>
+  <div class="kpi-card kpi--green">
+    <div class="kpi-icon"><i class="fa fa-circle-check"></i></div>
+    <div class="kpi-body"><div class="kpi-value">{{ stats.eligible_donors }}</div><div class="kpi-label">Eligible Donors</div></div>
+  </div>
+  <div class="kpi-card kpi--blue">
+    <div class="kpi-icon"><i class="fa fa-hourglass-half"></i></div>
+    <div class="kpi-body"><div class="kpi-value">{{ stats.pending_requests }}</div><div class="kpi-label">Pending Requests</div></div>
+  </div>
+</div>
+
+<div class="dash-main-grid">
+  <div class="dash-panel">
+    <div class="panel-header">
+      <h3><i class="fa fa-droplet"></i> Blood Stock Overview</h3>
+      <a href="{{ url_for('stock') }}" class="panel-link">Manage →</a>
+    </div>
+    <div class="stock-mini-grid">
+      {% for bg in blood_groups %}
+      {% set units = stock[bg] %}
+      {% set level = 'low' if units < 5 else 'medium' if units < 15 else 'high' %}
+      <div class="stock-mini stock-{{ level }}">
+        <div class="bg-label">{{ bg }}</div>
+        <div class="bg-units">{{ units }}</div>
+        <div class="bg-bar"><div class="bg-bar-fill" style="width: {{ [units * 4, 100] | min }}%"></div></div>
+      </div>
+      {% endfor %}
+    </div>
+  </div>
+
+  <div class="dash-panel">
+    <div class="panel-header"><h3><i class="fa fa-clock-rotate-left"></i> Recent Activity</h3></div>
+    <div class="activity-list">
+      {% for act in activities %}
+      <div class="activity-item">
+        <span class="act-dot"></span>
+        <div class="act-body">
+          <div class="act-msg">{{ act.action }}</div>
+          <div class="act-time">{{ act.timestamp.strftime('%Y-%m-%d %H:%M') }}</div>
+        </div>
+      </div>
+      {% else %}
+      <div class="empty-state">No recent activity.</div>
+      {% endfor %}
+    </div>
+  </div>
+</div>
+
+<div class="quick-actions">
+  <h3 class="qa-title">Quick Actions</h3>
+  <div class="qa-grid">
+    <a href="{{ url_for('add_donor') }}" class="qa-btn"><i class="fa fa-user-plus"></i> Add Donor</a>
+    <a href="{{ url_for('add_request') }}" class="qa-btn qa-btn--red"><i class="fa fa-plus"></i> New Request</a>
+    <a href="{{ url_for('donors') }}" class="qa-btn qa-btn--outline"><i class="fa fa-list"></i> View Donors</a>
+    <a href="{{ url_for('requests_page') }}" class="qa-btn qa-btn--outline"><i class="fa fa-clipboard-list"></i> All Requests</a>
+  </div>
+</div>
+
+<div class="dash-panel" style="margin-top:1.5rem;">
+  <div class="panel-header"><h3><i class="fa fa-chart-bar"></i> Stock Distribution</h3></div>
+  <div class="chart-container"><canvas id="stockChart"></canvas></div>
+</div>
+{% endblock %}
+
+{% block scripts %}
+<script src="https://cdnjs.cloudflare.com/ajax/libs/Chart.js/4.4.0/chart.umd.min.js"></script>
+<script>
+const stockData = {{ stock | tojson }};
+const labels = Object.keys(stockData);
+const values = Object.values(stockData);
+new Chart(document.getElementById('stockChart').getContext('2d'), {
+  type: 'bar',
+  data: {
+    labels,
+    datasets: [{
+      label: 'Units Available',
+      data: values,
+      backgroundColor: labels.map(l => l.includes('-') ? 'rgba(220,38,38,0.7)' : 'rgba(220,38,38,0.4)'),
+      borderColor: '#dc2626', borderWidth: 2, borderRadius: 8,
+    }]
+  },
+  options: {
+    responsive: true,
+    plugins: { legend: { display: false } },
+    scales: {
+      x: { ticks: { color: '#aaa' }, grid: { color: 'rgba(255,255,255,0.05)' } },
+      y: { ticks: { color: '#aaa' }, grid: { color: 'rgba(255,255,255,0.05)' }, beginAtZero: true }
+    }
+  }
+});
+</script>
+{% endblock %}

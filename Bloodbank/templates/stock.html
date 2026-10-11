@@ -1,0 +1,78 @@
+{% extends "layout.html" %}
+{% block title %}Blood Stock{% endblock %}
+{% block page_title %}Blood Stock Management{% endblock %}
+{% block content %}
+<div class="stock-grid">
+  {% for bg in blood_groups %}
+  {% set units = stock[bg] %}
+  {% if units < 5 %}{% set level = 'critical' %}{% set icon = '⚠️' %}
+  {% elif units < 15 %}{% set level = 'low' %}{% set icon = '🔶' %}
+  {% else %}{% set level = 'good' %}{% set icon = '✅' %}{% endif %}
+  <div class="stock-card stock-{{ level }}">
+    <div class="stock-card-top">
+      <span class="stock-bg">{{ bg }}</span><span class="stock-status-icon">{{ icon }}</span>
+    </div>
+    <div class="stock-units">{{ units }}</div>
+    <div class="stock-label">units available</div>
+    <div class="stock-bar-wrap"><div class="stock-bar-fill" style="width: {{ [units * 4, 100] | min }}%"></div></div>
+    {% if bg == 'O-' %}<div class="stock-note">Universal Donor</div>
+    {% elif bg == 'AB+' %}<div class="stock-note">Universal Recipient</div>{% endif %}
+  </div>
+  {% endfor %}
+</div>
+
+<div class="stock-summary">
+  <div class="sum-card"><i class="fa fa-droplet"></i><span>Total Units: <strong>{{ total }}</strong></span></div>
+  <div class="sum-card sum-crit">
+    <i class="fa fa-triangle-exclamation"></i>
+    <span>Critical (&lt;5): <strong>{{ stock.values() | list | select('lt', 5) | list | length }}</strong></span>
+  </div>
+</div>
+
+<div class="table-card">
+  <div class="panel-header"><h3><i class="fa fa-pen-to-square"></i> Update Stock</h3></div>
+  <form method="POST" action="{{ url_for('update_stock') }}" class="stock-update-form">
+    <div class="form-grid">
+      <div class="form-group">
+        <label>Blood Group</label>
+        <select name="blood_group" required>
+          {% for bg in blood_groups %}<option value="{{ bg }}">{{ bg }}</option>{% endfor %}
+        </select>
+      </div>
+      <div class="form-group"><label>Units</label><input type="number" name="units" value="1" min="1" max="100" required></div>
+      <div class="form-group">
+        <label>Action</label>
+        <select name="action">
+          <option value="add">➕ Add Units</option>
+          <option value="remove">➖ Remove Units</option>
+        </select>
+      </div>
+    </div>
+    <button type="submit" class="btn btn-red"><i class="fa fa-save"></i> Update Stock</button>
+  </form>
+</div>
+
+<div class="table-card" style="margin-top:1.5rem;">
+  <div class="panel-header"><h3><i class="fa fa-dna"></i> Full Compatibility Matrix</h3></div>
+  <div class="table-scroll">
+    <table class="data-table">
+      <thead><tr><th>Recipient</th><th>Compatible Donors</th><th>Stock Available</th></tr></thead>
+      <tbody>
+        {% for recipient, donors in compatibility.items() %}
+        <tr>
+          <td><span class="bg-badge bg-{{ recipient | replace('+','p') | replace('-','n') }}">{{ recipient }}</span></td>
+          <td>{% for d in donors %}<span class="compat-donor">{{ d }}</span>{% endfor %}</td>
+          <td>
+            {% set total_compat = namespace(val=0) %}
+            {% for d in donors %}{% set total_compat.val = total_compat.val + stock.get(d, 0) %}{% endfor %}
+            {% if total_compat.val < 5 %}
+            <span class="status-badge status-warn">{{ total_compat.val }} units ⚠️</span>
+            {% else %}<span class="status-badge status-ok">{{ total_compat.val }} units</span>{% endif %}
+          </td>
+        </tr>
+        {% endfor %}
+      </tbody>
+    </table>
+  </div>
+</div>
+{% endblock %}

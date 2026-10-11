@@ -1,0 +1,55 @@
+{% extends "layout.html" %}
+{% block title %}Add Request{% endblock %}
+{% block page_title %}New Blood Request{% endblock %}
+{% block content %}
+<div class="form-page">
+  <div class="form-card">
+    <div class="form-card-header">
+      <h2><i class="fa fa-hand-holding-medical"></i> New Blood Request</h2>
+      <a href="{{ url_for('requests_page') }}" class="btn-back"><i class="fa fa-arrow-left"></i> Back</a>
+    </div>
+    <form method="POST" action="{{ url_for('add_request') }}">
+      <div class="form-grid">
+        <div class="form-group"><label>Patient Name *</label><input type="text" name="patient_name" placeholder="Full patient name" required></div>
+        <div class="form-group">
+          <label>Blood Group Required *</label>
+          <select name="blood_group" required id="bgSelect">
+            <option value="">Select Blood Group</option>
+            {% for bg in blood_groups %}<option value="{{ bg }}">{{ bg }}</option>{% endfor %}
+          </select>
+        </div>
+        <div class="form-group"><label>Units Needed *</label><input type="number" name="units_needed" value="1" min="1" max="20" required></div>
+        <div class="form-group"><label>Hospital / Medical Center *</label><input type="text" name="hospital" placeholder="Hospital name & city" required></div>
+        <div class="form-group"><label>Contact Number * (10 digits)</label><input type="tel" name="contact" placeholder="9876543210" pattern="[0-9]{10}" required></div>
+        <div class="form-group">
+          <label>Priority Level *</label>
+          <select name="priority" required>
+            <option value="normal">Normal</option>
+            <option value="emergency">🚨 Emergency</option>
+          </select>
+        </div>
+      </div>
+      <div id="compatInfo" class="compat-info-box" style="display:none;">
+        <h4><i class="fa fa-dna"></i> Compatible Donor Groups:</h4>
+        <div id="compatDonors"></div>
+      </div>
+      <div class="form-actions">
+        <button type="submit" class="btn btn-red"><i class="fa fa-plus"></i> Submit Request</button>
+        <a href="{{ url_for('requests_page') }}" class="btn btn-ghost">Cancel</a>
+      </div>
+    </form>
+  </div>
+</div>
+<script>
+document.getElementById('bgSelect').addEventListener('change', function() {
+  const bg = this.value;
+  if (!bg) { document.getElementById('compatInfo').style.display = 'none'; return; }
+  fetch('/api/compatibility/' + encodeURIComponent(bg))
+    .then(r => r.json())
+    .then(data => {
+      document.getElementById('compatDonors').innerHTML = data.donors.map(d => `<span class="compat-donor">${d}</span>`).join('');
+      document.getElementById('compatInfo').style.display = 'block';
+    });
+});
+</script>
+{% endblock %}

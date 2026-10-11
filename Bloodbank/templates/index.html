@@ -1,0 +1,99 @@
+{% extends "layout.html" %}
+{% block title %}Home{% endblock %}
+{% block content %}
+<nav class="public-nav">
+  <div class="public-nav-inner">
+    <a href="{{ url_for('index') }}" class="brand-link">🩸 <strong>LifeFlow</strong></a>
+    <div class="pub-nav-links">
+      <a href="{{ url_for('login') }}" class="btn btn-outline">Admin Login</a>
+    </div>
+  </div>
+</nav>
+<section class="hero">
+  <div class="hero-bg-grid"></div>
+  <div class="hero-content">
+    <div class="hero-badge">🚨 Emergency Services Available 24/7</div>
+    <h1 class="hero-title">Every Drop<br><span class="text-red">Saves a Life.</span></h1>
+    <p class="hero-sub">India's modern blood bank management system. Connect donors with recipients instantly, track availability in real-time, and save lives through technology.</p>
+    <div class="hero-cta">
+      <a href="{{ url_for('login') }}" class="btn btn-primary-lg">Access Dashboard <i class="fa fa-arrow-right"></i></a>
+      <a href="#stats" class="btn btn-ghost-lg">View Statistics</a>
+    </div>
+  </div>
+  <div class="hero-visual">
+    <div class="blood-drop-anim">
+      <div class="drop drop-1">🩸</div>
+      <div class="drop drop-2">🩸</div>
+      <div class="drop drop-3">🩸</div>
+    </div>
+    <div class="pulse-ring"></div>
+  </div>
+</section>
+<div class="emergency-banner">
+  <div class="emergency-inner">
+    <span class="em-pulse"></span>
+    <strong>URGENT NEED:</strong> &nbsp; O- and B- blood groups critically low! &nbsp;
+    <a href="{{ url_for('login') }}" class="em-link">Register as donor →</a>
+  </div>
+</div>
+<section class="stats-section" id="stats">
+  <div class="section-label">Live Statistics</div>
+  <h2 class="section-title">Our Impact in Numbers</h2>
+  <div class="stats-grid">
+    <div class="stat-card">
+      <div class="stat-icon"><i class="fa fa-users"></i></div>
+      <div class="stat-number" data-target="{{ stats.total_donors }}">0</div>
+      <div class="stat-label">Registered Donors</div>
+    </div>
+    <div class="stat-card stat-card--red">
+      <div class="stat-icon"><i class="fa fa-droplet"></i></div>
+      <div class="stat-number" data-target="{{ stats.total_units }}">0</div>
+      <div class="stat-label">Units Available</div>
+    </div>
+    <div class="stat-card">
+      <div class="stat-icon"><i class="fa fa-hand-holding-medical"></i></div>
+      <div class="stat-number" data-target="{{ stats.total_requests }}">0</div>
+      <div class="stat-label">Total Requests</div>
+    </div>
+    <div class="stat-card stat-card--urgent">
+      <div class="stat-icon"><i class="fa fa-bell"></i></div>
+      <div class="stat-number" data-target="{{ stats.emergency_requests }}">0</div>
+      <div class="stat-label">Emergency Requests</div>
+    </div>
+  </div>
+</section>
+<section class="blood-info-section">
+  <div class="section-label">Compatibility</div>
+  <h2 class="section-title">Blood Group Guide</h2>
+  <div class="blood-grid">
+    {% set groups = ['A+','A-','B+','B-','AB+','AB-','O+','O-'] %}
+    {% set descs = {'O-':'Universal Donor','AB+':'Universal Recipient','O+':'Most Common','A+':'Common Type','B+':'Common Type','A-':'Rare Type','B-':'Rare Type','AB-':'Rarest Type'} %}
+    {% for bg in groups %}
+    <div class="blood-card {% if bg == 'O-' %}blood-card--gold{% elif bg == 'AB+' %}blood-card--blue{% endif %}">
+      <div class="blood-type">{{ bg }}</div>
+      <div class="blood-desc">{{ descs[bg] }}</div>
+    </div>
+    {% endfor %}
+  </div>
+</section>
+<section class="features-section">
+  <div class="section-label">Why Donate?</div>
+  <h2 class="section-title">Be a Hero Today</h2>
+  <div class="features-grid">
+    <div class="feature-card"><div class="feature-icon">❤️</div><h3>Save 3 Lives</h3><p>One blood donation can save up to 3 lives through component separation.</p></div>
+    <div class="feature-card"><div class="feature-icon">⏱️</div><h3>Every 2 Seconds</h3><p>Someone in India needs blood every 2 seconds. Your donation is always needed.</p></div>
+    <div class="feature-card"><div class="feature-icon">🔄</div><h3>Blood Replenishes</h3><p>Your body replenishes donated blood within 24 hours. Safe and beneficial.</p></div>
+    <div class="feature-card"><div class="feature-icon">🏥</div><h3>No Substitutes</h3><p>Blood cannot be manufactured. Human donors are the only source.</p></div>
+  </div>
+</section>
+<section class="cta-section">
+  <div class="cta-inner">
+    <h2>Ready to Make a Difference?</h2>
+    <p>Join our network of life-saving donors. Registration takes less than 2 minutes.</p>
+    <a href="{{ url_for('login') }}" class="btn btn-primary-lg">Get Started <i class="fa fa-arrow-right"></i></a>
+  </div>
+</section>
+<footer class="site-footer">
+  <p>🩸 LifeFlow BloodBank Management System &nbsp;|&nbsp; Flask + SQLAlchemy &nbsp;|&nbsp; 2025</p>
+</footer>
+{% endblock %}

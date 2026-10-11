@@ -1,0 +1,43 @@
+{% extends "layout.html" %}
+{% block title %}Admin Login{% endblock %}
+{% block content %}
+<div class="login-page">
+  <div class="login-left">
+    <div class="login-brand">🩸 LifeFlow</div>
+    <h1 class="login-headline">Saving Lives<br>Through Data</h1>
+    <p class="login-tagline">Blood Bank Management System</p>
+    <div class="login-dots"><span></span><span></span><span></span></div>
+  </div>
+  <div class="login-right">
+    <div class="login-card">
+      <div class="login-card-header">
+        <h2>Admin Login</h2>
+        <p>Default: <strong>admin</strong> / <strong>admin123</strong></p>
+      </div>
+      <form method="POST" action="{{ url_for('login') }}">
+        <div class="form-group">
+          <label for="username"><i class="fa fa-user"></i> Username</label>
+          <input type="text" id="username" name="username" placeholder="Enter username" required autocomplete="off">
+        </div>
+        <div class="form-group">
+          <label for="password"><i class="fa fa-lock"></i> Password</label>
+          <div class="pw-wrap">
+            <input type="password" id="password" name="password" placeholder="Enter password" required>
+            <button type="button" class="pw-toggle" onclick="togglePassword()"><i class="fa fa-eye" id="eye-icon"></i></button>
+          </div>
+        </div>
+        <button type="submit" class="btn-login">Login <i class="fa fa-arrow-right"></i></button>
+      </form>
+      <a href="{{ url_for('index') }}" class="back-home"><i class="fa fa-arrow-left"></i> Back to Home</a>
+    </div>
+  </div>
+</div>
+<script>
+function togglePassword() {
+  const pw = document.getElementById('password');
+  const icon = document.getElementById('eye-icon');
+  pw.type = pw.type === 'password' ? 'text' : 'password';
+  icon.classList.toggle('fa-eye'); icon.classList.toggle('fa-eye-slash');
+}
+</script>
+{% endblock %}

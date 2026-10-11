@@ -1,0 +1,72 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>{% block title %}BloodBank{% endblock %} | LifeFlow</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link href="https://fonts.googleapis.com/css2?family=Bebas+Neue&family=DM+Sans:wght@300;400;500;600;700&family=JetBrains+Mono:wght@400;600&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css">
+  <link rel="stylesheet" href="{{ url_for('static', filename='css/style.css') }}">
+</head>
+<body>
+{% if session.get('logged_in') %}
+<aside class="sidebar" id="sidebar">
+  <div class="sidebar-brand"><span class="brand-icon">🩸</span><span class="brand-name">LifeFlow</span></div>
+  <nav class="sidebar-nav">
+    <a href="{{ url_for('dashboard') }}" class="nav-item {% if request.endpoint == 'dashboard' %}active{% endif %}">
+      <i class="fa fa-gauge-high"></i><span>Dashboard</span></a>
+    <a href="{{ url_for('donors') }}" class="nav-item {% if 'donor' in (request.endpoint or '') %}active{% endif %}">
+      <i class="fa fa-user-plus"></i><span>Donors</span></a>
+    <a href="{{ url_for('requests_page') }}" class="nav-item {% if 'request' in (request.endpoint or '') %}active{% endif %}">
+      <i class="fa fa-hand-holding-medical"></i><span>Requests</span></a>
+    <a href="{{ url_for('stock') }}" class="nav-item {% if request.endpoint == 'stock' %}active{% endif %}">
+      <i class="fa fa-droplet"></i><span>Blood Stock</span></a>
+    <div class="nav-divider"></div>
+    <a href="{{ url_for('index') }}" class="nav-item"><i class="fa fa-house"></i><span>Home</span></a>
+    <a href="{{ url_for('logout') }}" class="nav-item nav-logout"><i class="fa fa-right-from-bracket"></i><span>Logout</span></a>
+  </nav>
+  <div class="sidebar-footer">
+    <span class="admin-badge"><i class="fa fa-shield-halved"></i> {{ session.get('user_role','admin')|title }}</span>
+  </div>
+</aside>
+<div class="main-wrapper">
+  <header class="topbar">
+    <button class="menu-toggle" onclick="toggleSidebar()"><i class="fa fa-bars"></i></button>
+    <div class="topbar-title">{% block page_title %}Dashboard{% endblock %}</div>
+    <div class="topbar-right">
+      <span class="topbar-user"><i class="fa fa-circle-user"></i> {{ session.get('username','Admin') }}</span>
+    </div>
+  </header>
+  <main class="content-area">
+{% else %}
+<div class="public-page">
+{% endif %}
+
+{% with messages = get_flashed_messages(with_categories=true) %}
+  {% if messages %}
+    <div class="flash-container {% if not session.get('logged_in') %}public-flash{% endif %}">
+      {% for category, message in messages %}
+      <div class="flash flash-{{ category }}">
+        <i class="fa {% if category == 'success' %}fa-circle-check{% elif category == 'danger' %}fa-triangle-exclamation{% elif category == 'warning' %}fa-bell{% else %}fa-circle-info{% endif %}"></i>
+        {{ message }}
+        <button onclick="this.parentElement.remove()" class="flash-close">&times;</button>
+      </div>
+      {% endfor %}
+    </div>
+  {% endif %}
+{% endwith %}
+
+{% block content %}{% endblock %}
+
+{% if session.get('logged_in') %}
+  </main>
+</div>
+{% else %}
+</div>
+{% endif %}
+
+<script src="{{ url_for('static', filename='js/script.js') }}"></script>
+{% block scripts %}{% endblock %}
+</body>
+</html>
